@@ -7,6 +7,9 @@
     (ding)))
 (setq ring-bell-function 'my-bell-function) 
 
+; Line numbers
+(global-linum-mode t)
+
 ; Linux C indentation style
 (setq c-default-style "linux"
       c-basic-offset 4)

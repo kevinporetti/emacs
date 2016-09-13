@@ -1,5 +1,6 @@
-# Compiled
-*.elc
-
-# Packaging
-.cask
+# ignore all files
+*
+# but emacs configs and .gitignore
+!init.el
+!zweilight-theme.el
+!.gitignore
