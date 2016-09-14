@@ -3,15 +3,67 @@
 (define-key global-map "\ef" 'find-file)
 (define-key global-map "\eF" 'find-file-other-window)
 
-; Rebind save to M-s instead of C-x C-s
-(define-key global-map "\es" 'rebound-save-buffer)
+; Switching buffers
+(global-set-key (read-kbd-macro "\eb")  'ido-switch-buffer)
+(global-set-key (read-kbd-macro "\eB")  'ido-switch-buffer-other-window)
 
-; Switch between windows
+; Rebind save to M-s instead of C-x C-s
+(defun rebound-save-buffer ()
+  "Save the buffer after untabifying it."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (untabify (point-min) (point-max))))
+  (save-buffer))
+(define-key global-map "\C-s" 'rebound-save-buffer)
+
+; Rebind search since C-s is now save
+(define-key global-map "\es" 'isearch-forward)
+
+; Switch between windows with M-q
 (define-key global-map "\eq" 'other-window)
 
 ; Use clipboard for copy and paste
 (setq select-active-regions nil)
 (setq mouse-drag-copy-region t)
+
+; Duplicate line with C-d 
+(defun duplicate-line (arg)
+  "Duplicate current line, leaving point in lower line."
+  (interactive "*p")
+
+  ;; save the point for undo
+  (setq buffer-undo-list (cons (point) buffer-undo-list))
+
+  ;; local variables for start and end of line
+  (let ((bol (save-excursion (beginning-of-line) (point)))
+        eol)
+    (save-excursion
+
+      ;; don't use forward-line for this, because you would have
+      ;; to check whether you are at the end of the buffer
+      (end-of-line)
+      (setq eol (point))
+
+      ;; store the line and disable the recording of undo information
+      (let ((line (buffer-substring bol eol))
+            (buffer-undo-list t)
+            (count arg))
+        ;; insert the line arg times
+        (while (> count 0)
+          (newline)         ;; because there is no newline in 'line'
+          (insert line)
+          (setq count (1- count)))
+        )
+
+      ;; create the undo information
+      (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list)))
+    ) ; end-of-let
+
+  ;; put the point in the lowest line and return
+  (next-line arg))
+(define-key global-map  "\C-d" 'duplicate-line)
 
 ; Turn off Windows bell when scrolling limit reached
 (defun my-bell-function ()
@@ -66,14 +118,6 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ; Custom functions
-(defun rebound-save-buffer ()
-  "Save the buffer after untabifying it."
-  (interactive)
-  (save-excursion
-    (save-restriction
-      (widen)
-      (untabify (point-min) (point-max))))
-  (save-buffer))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
