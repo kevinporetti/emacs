@@ -1,7 +1,22 @@
+; Custom keybindings
+; Setup my find-files
+(define-key global-map "\ef" 'find-file)
+(define-key global-map "\eF" 'find-file-other-window)
+
+; Rebind save to M-s instead of C-x C-s
+(define-key global-map "\es" 'rebound-save-buffer)
+
+; Switch between windows
+(define-key global-map "\eq" 'other-window)
+
+; Use clipboard for copy and paste
+(setq select-active-regions nil)
+(setq mouse-drag-copy-region t)
+
 ; Turn off Windows bell when scrolling limit reached
 (defun my-bell-function ()
   (unless (memq this-command
-		'(isearch-abort abort-recursive-edit exit-minibuffer
+        '(isearch-abort abort-recursive-edit exit-minibuffer
               keyboard-quit mwheel-scroll down up next-line previous-line
               backward-char forward-char))
     (ding)))
@@ -49,6 +64,16 @@
 
 ; Maximize on startup
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+; Custom functions
+(defun rebound-save-buffer ()
+  "Save the buffer after untabifying it."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (untabify (point-min) (point-max))))
+  (save-buffer))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
