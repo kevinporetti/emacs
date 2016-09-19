@@ -111,6 +111,12 @@
 ; No menu bar
 (menu-bar-mode -1)
 
+; Set Default Cursor 
+(set-default 'cursor-type 'hbar)
+
+; Highlight parentheses
+(show-paren-mode)
+
 ; Font
 (set-face-attribute 'default t :font "Liberation Mono-11.5")
 
