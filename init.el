@@ -112,7 +112,7 @@
 (menu-bar-mode -1)
 
 ; Set Default Cursor 
-(set-default 'cursor-type 'hbar)
+(set-default 'cursor-type 'bar)
 
 ; Highlight parentheses
 (show-paren-mode)
